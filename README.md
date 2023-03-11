@@ -31,7 +31,7 @@ Share all the skills and experiences I gained in my 10+ years career in bioinfor
 
 ### b. Bioinformatics Tools
 
-Explore popular bioinformatics tools widely used for experimental design and data analysis for CRISPR screens, RNAseq, ChIPseq, Perturbseq, etc. If you are also interested, please consider subscribing both my [English](https://www.youtube.com/channel/UC9GCtpQdyJW2_Es8psxHGMw?sub_confirmation=1) and [Chinese](https://www.youtube.com/channel/UCrOINtaeDHkSz34DANQej5g?sub_confirmation=1) channels for more updates to come...
+Explore popular bioinformatics tools widely used for experimental design and data analysis for CRISPR screens, RNAseq, ChIPseq, Perturbseq, etc. If you are also interested, please consider subscribing my [English](https://www.youtube.com/channel/UC9GCtpQdyJW2_Es8psxHGMw?sub_confirmation=1) and/or [Chinese](https://www.youtube.com/channel/UCrOINtaeDHkSz34DANQej5g?sub_confirmation=1) channels for more updates to come...
 
 - [Tools_01: How to design best sgRNA for protein knockout](https://www.youtube.com/watch?v=i9LJ2pMBLio)
 - [工具篇01: 如何快速设计用于基因/蛋白敲除的最优sgRNA](https://www.youtube.com/watch?v=5tXF8ytBDfI&t=4s)
