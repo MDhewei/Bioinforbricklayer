@@ -28,6 +28,8 @@ Share all the skills and experiences I gained in my 10+ years career in bioinfor
 - [技能篇05: 如何在 jupyter notebook 中实现蛋白质三维结构的可视化](https://studio.youtube.com/video/bppN7_Vtbr8/edit)
 - [Skills_06: How to perform gene set enrichment analysis with python](https://studio.youtube.com/video/CxguC-duCZM/edit)
 - [技能篇06: 如何用 python 进行基因集富集分析](https://studio.youtube.com/video/bppN7_Vtbr8/edit)
+- [Skills_07: How to plot volcano plot and perform gene ontology analysis with python](https://youtu.be/VREmf3MZ36A)
+- [技能篇07: 如何用 python 画火山图和进行基因本体论分析](https://www.youtube.com/watch?v=DJ7AfdaZ_bU)
 
 ### b. Bioinformatics Tools
 
