@@ -1,0 +1,349 @@
+---
+title: "MAGeCK Comparison Report"
+output: html_notebook
+---
+
+<!-- 
+
+This is a template file for R markdown used in MAGeCK 
+ 
+-->
+
+Author: Wei Li, weililab.org
+
+
+## Parameters
+
+comparison_name is the prefix of your output file, defined by the "-n" parameter in your "mageck test" command. The system will look for the following files to generate this report:
+
+* comparison_name.sgrna_summary.txt
+* comparison_name.gene_summary.txt
+* comparison_name.log
+
+
+```{r}
+# define the comparison_name here; for example,
+# comparison_name='demo'
+comparison_name='dmso_test'
+```
+
+FDR cutoff is used to draw a boundary line in RRA or p value plots. Set it to -1 to disable the boundary line.
+```{r}
+fdrcutoff=0.05
+# fdrcutoff=-1 # disable FDR cutoff line
+```
+
+
+## Preprocessing
+
+
+```{r echo=FALSE}
+
+
+####  function definition #
+
+library(knitr)
+
+genreporttable<-function(cpname,genetb){
+  comparisons=rep(cpname,2)
+  #genetb=read.table(genesummaryfile,header = T,as.is = T)
+  ngenes=rep(nrow(genetb),2)
+  direction=c('neg','pos')
+  fdr1=c(sum(genetb[,5]<0.01),sum(genetb[,11]<0.01))
+  fdr5=c(sum(genetb[,5]<0.05),sum(genetb[,11]<0.05))
+  fdr25=c(sum(genetb[,5]<0.05),sum(genetb[,11]<0.05))
+  xtb=data.frame(Comparison=comparisons,Genes=ngenes,Selection=direction,FDR1=fdr1,FDR5=fdr5,FDR25=fdr25);
+  colnames(xtb)=c("Comparison","Genes","Selection","FDR1%","FDR5%","FDR25%");
+  return (xtb);
+}
+
+
+colors=c( "#E41A1C", "#377EB8", "#4DAF4A", "#984EA3", "#FF7F00",  "#A65628", "#F781BF",
+          "#999999", "#66C2A5", "#FC8D62", "#8DA0CB", "#E78AC3", "#A6D854", "#FFD92F", "#E5C494", "#B3B3B3", 
+          "#8DD3C7", "#FFFFB3", "#BEBADA", "#FB8072", "#80B1D3", "#FDB462", "#B3DE69", "#FCCDE5",
+          "#D9D9D9", "#BC80BD", "#CCEBC5", "#FFED6F")
+
+
+plotrankedvalues<-function(val, tglist, cutoffline=-1, ...){
+  
+  plot(val,log='y',ylim=c(max(val),min(val)),type='l',lwd=2, ...)
+  if(length(tglist)>0){
+    for(i in 1:length(tglist)){
+      targetgene=tglist[i];
+      tx=which(names(val)==targetgene);ty=val[targetgene];
+      points(tx,ty,col=colors[(i %% length(colors)) ],cex=2,pch=20)
+      # text(tx+50,ty,targetgene,col=colors[i])
+    }
+    legend('topright',tglist,pch=20,pt.cex = 2,cex=1,col=colors)
+  }
+  if(cutoffline>0){
+    lines(c(cutoffline,cutoffline),c(min(val)*1e-5,max(val)*10000),lty=2)
+  }
+}
+
+
+
+plotrandvalues<-function(val,targetgenelist,cutoffline=-1, ...){
+  # choose the one with the best distance distribution
+  
+  mindiffvalue=0;
+  randval=val;
+  for(i in 1:20){
+    randval0=sample(val)
+    vindex=sort(which(names(randval0) %in% targetgenelist))
+    if(max(vindex)>0.9*length(val)){
+      # print('pass...')
+      next;
+    }
+    mindiffind=min(diff(vindex));
+    if (mindiffind > mindiffvalue){
+      mindiffvalue=mindiffind;
+      randval=randval0;
+      # print(paste('Diff: ',mindiffvalue))
+    }
+  }
+  plot(randval,log='y',ylim=c(max(randval),min(randval)),pch=20,col='grey', ...)
+  
+  if(length(targetgenelist)>0){
+    for(i in 1:length(targetgenelist)){
+      targetgene=targetgenelist[i];
+      tx=which(names(randval)==targetgene);ty=randval[targetgene];
+      points(tx,ty,col=colors[(i %% length(colors)) ],cex=2,pch=20)
+      text(tx+length(randval)/100,ty,targetgene,col=colors[i],adj=1,pos=4)
+    }
+  }
+  if(cutoffline>0){
+    lines(c(-100,length(randval)*2),c(cutoffline,cutoffline),lty=2)
+  }
+  
+}
+
+getcomparisonsfromlogfile<-function(logfile){
+  
+  logline=readLines(file(logfile,"r"),n = 1)
+  #print(logline)
+  logbk=strsplit(logline,' ')[[1]]
+  ctrl_sample=c()
+  treat_sample=c()
+  for(i_x in 1:length(logbk)){
+    if(logbk[i_x]=='-c' | logbk[i_x]=='--control'){
+      ctrl_sample=strsplit(logbk[i_x+1],',')[[1]]
+    }
+     if(logbk[i_x]=='-t' | logbk[i_x]=='--treatment'){
+      treat_sample=strsplit(logbk[i_x+1],',')[[1]]
+    }
+  }
+  #close(logff)
+  return (list(ctrl_sample,treat_sample))
+}
+
+plotindvidualsgrnas<-function(sg_table,targetgene,collabel){
+  
+  xsg_c=sg_table[which(sg_table[,'Gene']==targetgene),c('control_count','treatment_count')]
+  rownames(xsg_c)=sg_table[which(sg_table[,'Gene']==targetgene),'sgrna']
+  
+  xsg_c2=paste(xsg_c[,1],xsg_c[,2],sep='/')
+  
+  xsg_c3=t(data.frame(lapply(strsplit(xsg_c2,'/'),as.numeric)))
+  rownames(xsg_c3)=rownames(xsg_c)
+  
+  targetmat=xsg_c3
+  
+  targetmatvec=unlist(targetmat)+1
+  yrange=range(targetmatvec[targetmatvec>0]);
+  # yrange[1]=1; # set the minimum value to 1
+  for(i in 1:nrow(targetmat)){
+    vali=targetmat[i,]+1;
+    if(i==1){
+      plot(1:length(vali),vali,type='b',las=1,pch=20,main=paste('sgRNAs in',targetgene),ylab='Read counts',xlab='Samples',xlim=c(0.7,length(vali)+0.3),ylim = yrange,col=colors[(i %% length(colors))],xaxt='n',log='y')
+      if(length(collabel)==length(vali)){
+         axis(1,at=1:length(vali),labels=(collabel),las=2)
+      }else{
+        warning('Cannot extract sample labels.')
+      }
+
+      # lines(0:100,rep(1,101),col='black');
+    }else{
+      lines(1:length(vali),vali,type='b',pch=20,col=colors[(i %% length(colors))])
+    } 
+  }
+  
+
+}
+
+
+
+plot_rra_or_p_scores<-function(gstable,startindex,fdrcolumn,target_list,...){
+  pvec=gstable[,startindex]
+  names(pvec)=gstable[,'id']
+  pvec=sort(pvec);
+  
+  ncutoff=ifelse(fdrcutoff>0,sum(gstable[,fdrcolumn]<fdrcutoff),-1)
+  
+  vcutoff=ifelse(fdrcutoff>0 & ncutoff>0,max(pvec[1:ncutoff]),-1)
+  
+  plotrankedvalues(pvec,target_list,cutoffline = ncutoff,...)
+  
+  plotrandvalues(pvec,target_list,cutoffline = vcutoff,...)
+
+}
+```
+
+
+```{r echo=FALSE}
+
+gene_summary_file=paste(comparison_name,'.gene_summary.txt',sep='')
+sgrna_summary_file=paste(comparison_name,'.sgrna_summary.txt',sep='')
+log_file=paste(comparison_name,'.log',sep='')
+
+```
+
+
+Reading input files. If any of these files are problematic, an error message will be shown below.
+
+```{r}
+gstable=read.table(gene_summary_file,header = T,as.is = T,na.strings='')
+sg_table=read.table(sgrna_summary_file,header = T,as.is = T,na.strings='')
+comp_samples=getcomparisonsfromlogfile(log_file)
+collabel=c(comp_samples[[1]],comp_samples[[2]])
+```
+
+## Summary
+
+
+
+
+The samples used in the comparison is indicated as follows.
+
+
+```{r echo=FALSE,results='asis'}
+sampletable=data.frame(Sample=c(comp_samples[[1]],comp_samples[[2]]),Type=c(rep('control',length(comp_samples[[1]])),rep('treatment',length(comp_samples[[2]]))))
+kable(sampletable,caption='Sample summary')
+```
+
+The statistics of comparisons is as indicated in the following table. 
+
+```{r echo=FALSE,results='asis'}
+
+cptable=genreporttable(comparison_name,gstable)
+
+kable(cptable,caption='Comparion summary')
+```
+
+
+The meanings of the columns are as follows.
+
+* Comparison: The label for comparisons;
+* Genes: The number of genes in the library;
+* Selection: The direction of selection, either positive selection or negative selection;
+* FDR1%: The number of genes with FDR < 1%;
+* FDR5%: The number of genes with FDR < 5%;
+* FDR25%: The number of genes with FDR < 25%;
+
+## Plotting invidivual genes in negative selection
+
+The following figures show:
+
+* Individual sgRNA read counts of selected genes in selected samples; 
+* The distribution of RRA scores and p values of all genes; and
+* The RRA scores and p values of selected genes.
+
+The following genes are used in the plot (change it as you like). By default, it is the top 5 genes in negatively selected genes.
+
+```{r}
+targetgenelist_neg=gstable[gstable[,6]<5,1]
+
+# or, directly specify the genes to be plotted
+#targetgenelist_neg=c("ACTR8","ACIN1")
+
+# display genes used in the plot
+print(targetgenelist_neg)
+
+```
+
+The following figure plots the distribution of RRA scores across these genes. Dotted lines represent the FDR cutoff line defined by the "fdrcutoff" value in the "Paramters" section.
+
+```{r echo=FALSE}
+
+startindex=3
+fdrcolumn=5
+
+plot_rra_or_p_scores(gstable,startindex,fdrcolumn,target_list = targetgenelist_neg, xlab='Genes',ylab='RRAscore',main=paste('Distribution of RRA scores in',comparison_name))
+
+
+```
+
+
+The following figure plots the distribution of p values in these genes. Dotted lines represent the FDR cutoff line defined by the "fdrcutoff" value in the "Paramters" section.
+
+```{r echo=FALSE}
+
+
+startindex=4
+fdrcolumn=5
+
+plot_rra_or_p_scores(gstable,startindex,fdrcolumn,target_list = targetgenelist_neg, xlab='Genes',ylab='p value',main=paste('Distribution of p values in',comparison_name))
+
+
+```
+
+
+
+## Plotting invidivual genes in positive selection
+
+
+
+The following genes are used in the plot (change it as you like). By default, it is the top 5 genes in negatively selected genes.
+
+```{r}
+
+targetgenelist_pos=gstable[gstable[,12]<5,1]
+
+# or, directly specify the genes to be plotted
+#targetgenelist_pos=c("ACTR8","ACIN1")
+
+# display genes used in the plot
+print(targetgenelist_pos)
+
+```
+
+The following figure plots the distribution of RRA scores across these genes. Dotted lines represent the FDR cutoff line defined by the "fdrcutoff" value in the "Paramters" section.
+
+```{r echo=FALSE}
+
+startindex=9
+
+fdrcolumn=11
+
+plot_rra_or_p_scores(gstable,startindex,fdrcolumn,target_list = targetgenelist_pos, xlab='Genes',ylab='RRAscore',main=paste('Distribution of RRA scores in',comparison_name))
+
+
+```
+
+
+
+The following figure plots the distribution of p values in these genes. Dotted lines represent the FDR cutoff line defined by the "fdrcutoff" value in the "Paramters" section.
+
+```{r echo=FALSE}
+startindex=10
+
+fdrcolumn=11
+
+plot_rra_or_p_scores(gstable,startindex,fdrcolumn,target_list = targetgenelist_pos, xlab='Genes',ylab='p value',main=paste('Distribution of p values in',comparison_name))
+
+```
+
+# sgRNA changes
+
+The following figures show the distribution of sgRNA read counts (normalized) of selected genes in selected samples.
+
+
+```{r}
+
+for(target_gene in c(targetgenelist_neg,targetgenelist_pos)){
+  plotindvidualsgrnas(sg_table,target_gene,collabel)
+}
+
+```
+
+

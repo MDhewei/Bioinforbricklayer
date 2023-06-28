@@ -1,0 +1,2 @@
+File	Label	Reads	Mapped	Percentage	TotalsgRNAs	Zerocounts	GiniIndex	NegSelQC	NegSelQCPval	NegSelQCPvalPermutation	NegSelQCPvalPermutationFDR	NegSelQCGene
+HumanA_lentiGuidePuro.fq	sample1	3759332	2492632	0.6631	63950	65	0.1009	0	1	1	1	0.0

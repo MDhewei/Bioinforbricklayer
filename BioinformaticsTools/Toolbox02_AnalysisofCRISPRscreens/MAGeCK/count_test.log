@@ -1,0 +1,58 @@
+INFO  @ Mon, 13 Feb 2023 23:21:09: Parameters: /Users/whe3/anaconda3/bin/mageck count -l Human_GeCKOv2_Library_A_mageck.csv --fastq HumanA_lentiGuidePuro.fq -n count_test 
+INFO  @ Mon, 13 Feb 2023 23:21:09: Welcome to MAGeCK v0.5.9.4. Command: count 
+INFO  @ Mon, 13 Feb 2023 23:21:09: Loading 63950 predefined sgRNAs. 
+WARNING @ Mon, 13 Feb 2023 23:21:09: There are 1433 sgRNAs with duplicated sequences. 
+INFO  @ Mon, 13 Feb 2023 23:21:09: Parsing FASTQ file HumanA_lentiGuidePuro.fq... 
+INFO  @ Mon, 13 Feb 2023 23:21:09: Determining the trim-5 length of FASTQ file HumanA_lentiGuidePuro.fq... 
+INFO  @ Mon, 13 Feb 2023 23:21:09: Possible gRNA lengths:20 
+INFO  @ Mon, 13 Feb 2023 23:21:09: Processing 0M reads ... 
+INFO  @ Mon, 13 Feb 2023 23:21:09: Read length:42,9,43,38,39,21,20,32,19,18,30,7,26,12,22,25,5,17,8,81,24,15,23,29,77,11,27,28,16,31,6,10,79,37,14,35,34,80,13,78,76,33,40,45,44,59,65,61,57,64,58,36,74,41,75,46,73,62,60 
+INFO  @ Mon, 13 Feb 2023 23:21:09: Total tested reads: 100001, mapped: 72135(0.7213427865721342) 
+INFO  @ Mon, 13 Feb 2023 23:21:09: --trim-5 test data: (trim_length reads fraction) 
+INFO  @ Mon, 13 Feb 2023 23:21:09: 0	66437	0.9210092188258127 
+INFO  @ Mon, 13 Feb 2023 23:21:09: 1	5507	0.07634296804602482 
+INFO  @ Mon, 13 Feb 2023 23:21:09: 8	17	0.00023566923130241907 
+INFO  @ Mon, 13 Feb 2023 23:21:09: 4	16	0.00022180633534345324 
+INFO  @ Mon, 13 Feb 2023 23:21:09: 10	15	0.0002079434393844874 
+INFO  @ Mon, 13 Feb 2023 23:21:09: 15	14	0.00019408054342552158 
+INFO  @ Mon, 13 Feb 2023 23:21:09: 12	13	0.00018021764746655575 
+INFO  @ Mon, 13 Feb 2023 23:21:09: 14	13	0.00018021764746655575 
+INFO  @ Mon, 13 Feb 2023 23:21:09: 7	13	0.00018021764746655575 
+INFO  @ Mon, 13 Feb 2023 23:21:09: 11	12	0.00016635475150758992 
+INFO  @ Mon, 13 Feb 2023 23:21:09: 9	11	0.00015249185554862412 
+INFO  @ Mon, 13 Feb 2023 23:21:09: 2	11	0.00015249185554862412 
+INFO  @ Mon, 13 Feb 2023 23:21:09: 5	9	0.00012476606363069246 
+INFO  @ Mon, 13 Feb 2023 23:21:09: 13	8	0.00011090316767172662 
+INFO  @ Mon, 13 Feb 2023 23:21:09: 6	7	9.704027171276079e-05 
+INFO  @ Mon, 13 Feb 2023 23:21:09: 3	7	9.704027171276079e-05 
+INFO  @ Mon, 13 Feb 2023 23:21:09: 16	7	9.704027171276079e-05 
+INFO  @ Mon, 13 Feb 2023 23:21:09: 17	5	6.931447979482915e-05 
+INFO  @ Mon, 13 Feb 2023 23:21:09: 19	4	5.545158383586331e-05 
+INFO  @ Mon, 13 Feb 2023 23:21:09: 18	3	4.158868787689748e-05 
+INFO  @ Mon, 13 Feb 2023 23:21:09: 39	2	2.7725791917931655e-05 
+INFO  @ Mon, 13 Feb 2023 23:21:09: 41	1	1.3862895958965827e-05 
+INFO  @ Mon, 13 Feb 2023 23:21:09: 21	1	1.3862895958965827e-05 
+INFO  @ Mon, 13 Feb 2023 23:21:09: 26	1	1.3862895958965827e-05 
+INFO  @ Mon, 13 Feb 2023 23:21:09: 22	1	1.3862895958965827e-05 
+INFO  @ Mon, 13 Feb 2023 23:21:09: Auto determination of trim5 results: 0 
+INFO  @ Mon, 13 Feb 2023 23:21:09: Possible gRNA lengths:20 
+INFO  @ Mon, 13 Feb 2023 23:21:09: Processing 0M reads .. 
+INFO  @ Mon, 13 Feb 2023 23:21:11: Processing 1M reads .. 
+INFO  @ Mon, 13 Feb 2023 23:21:13: Processing 2M reads .. 
+INFO  @ Mon, 13 Feb 2023 23:21:16: Processing 3M reads .. 
+INFO  @ Mon, 13 Feb 2023 23:21:17: Total: 3759332. 
+INFO  @ Mon, 13 Feb 2023 23:21:17: Mapped: 2492632. 
+DEBUG @ Mon, 13 Feb 2023 23:21:17: Initial (total) size factor: 1.0 
+DEBUG @ Mon, 13 Feb 2023 23:21:18: Median factor: 1.0285714285714287 
+INFO  @ Mon, 13 Feb 2023 23:21:18: Final size factor: 1.0285714285714287 
+INFO  @ Mon, 13 Feb 2023 23:21:18: Summary of file HumanA_lentiGuidePuro.fq: 
+INFO  @ Mon, 13 Feb 2023 23:21:18: label	sample1 
+INFO  @ Mon, 13 Feb 2023 23:21:18: reads	3759332 
+INFO  @ Mon, 13 Feb 2023 23:21:18: mappedreads	2492632 
+INFO  @ Mon, 13 Feb 2023 23:21:18: totalsgrnas	63950 
+INFO  @ Mon, 13 Feb 2023 23:21:18: zerosgrnas	65 
+INFO  @ Mon, 13 Feb 2023 23:21:18: giniindex	0.10089748185878444 
+INFO  @ Mon, 13 Feb 2023 23:21:18: Loading Rnw template file: /Users/whe3/anaconda3/lib/python3.9/site-packages/mageck/count_report.Rmd. 
+DEBUG @ Mon, 13 Feb 2023 23:21:18: Setting up the visualization module... 
+INFO  @ Mon, 13 Feb 2023 23:21:18: Loading Rnw template file: /Users/whe3/anaconda3/lib/python3.9/site-packages/mageck/fastq_template.Rnw. 
+DEBUG @ Mon, 13 Feb 2023 23:21:18: Setting up the visualization module... 
